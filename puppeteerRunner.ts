@@ -1,22 +1,32 @@
-const puppeteer = require('puppeteer');
+import puppeteer, {Browser} from 'puppeteer-core';
 
-exports.runPuppeteer = async (req: any, res: any) => {
-  const browser = await puppeteer.launch({
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox'
-    ]
-  });
-
-  const page = await browser.newPage();
-  if(req.body.url) {
-    await page.goto(req.body.url)
-  }else{
+const runPuppeteer = async () => {
+  let browser: Browser|undefined
+  try {
+    browser = await puppeteer.launch({
+      executablePath: process.env.CHROME_BIN,
+      headless: false,
+      slowMo: 500,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
+    });
+  
+    const page = await browser.newPage();
+    page.setDefaultTimeout(10000);
+    await page.setViewport({ width: 1200, height: 800 })
     await page.goto('https://google.com');
+  } catch (err) {
+    console.log(err)
+  } finally {
+    if (browser != undefined) {
+      browser.close();
+    }
+    console.log("end")
   }
-  const img: string = await page.screenshot({encoding: "base64"});
-
-  browser.close();
-
-  res.send({ img })
 };
+
+(async () => {
+  await runPuppeteer()
+})();

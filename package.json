@@ -5,18 +5,23 @@
   "main": "test.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "debug": "ts-node puppeteerRunner.ts",
+    "start": "node puppeteerRunner.js",
+    "compile": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^12.12.8",
-    "puppeteer": "^2.0.0",
+    "puppeteer-core": "^2.0.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
+    "@types/puppeteer-core": "^1.9.0",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
-    "eslint": "^6.6.0"
+    "eslint": "^6.6.0",
+    "ts-node": "^8.6.1",
+    "typescript": "^3.7.4"
   }
 }

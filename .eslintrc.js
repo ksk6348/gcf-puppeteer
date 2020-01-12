@@ -15,11 +15,17 @@ module.exports = {
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "modules": true
+        }
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "rules": {
-    }
+        "no-unused-vars": "off",
+    },
+    
 };
