@@ -33,7 +33,6 @@ WORKDIR /home/alpine
 RUN npm install
 
 COPY . .
-RUN npm run compile
 
 ENV DISPLAY :1
 

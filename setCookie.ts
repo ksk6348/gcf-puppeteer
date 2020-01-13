@@ -1,4 +1,6 @@
 import puppeteer, {Browser} from 'puppeteer-core';
+import fs from 'fs';
+import {params} from './params'
 
 const runPuppeteer = async () => {
   let browser: Browser|undefined
@@ -6,17 +8,30 @@ const runPuppeteer = async () => {
     browser = await puppeteer.launch({
       executablePath: process.env.CHROME_BIN,
       headless: false,
-      slowMo: 500,
+      slowMo: 30,
       args: [
         '--no-sandbox',
-        '--disable-setuid-sandbox'
+        '--disable-setuid-sandbox',
+        '--ignore-certificate-errors',
       ]
     });
   
     const page = await browser.newPage();
-    page.setDefaultTimeout(10000);
     await page.setViewport({ width: 1200, height: 800 })
-    await page.goto('https://google.com');
+
+    const cookies = JSON.parse(fs.readFileSync(params.COOKIE_PATH, 'utf-8'));
+    for (let cookie of cookies) {
+      console.log(cookie.expires)
+      await page.setCookie(cookie);
+    }
+    await page.goto(params.USER_URL);
+
+    await page.waitFor(10000)
+
+    const text = await page.waitForSelector('.brand')
+      .then(elem => elem.getProperty('textContent'))
+      .then(elem => elem.jsonValue())
+    console.log(text)
   } catch (err) {
     console.log(err)
   } finally {

@@ -40,19 +40,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+var fs_1 = __importDefault(require("fs"));
+var AUTH = {
+    EMAIL: 'master@seo-reseach.co.jp',
+    PASS: 'pakotasa0118',
+};
 var runPuppeteer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var browser, page, err_1;
+    var browser, page, cookie, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, 6, 7]);
+                _a.trys.push([0, 10, 11, 12]);
                 return [4 /*yield*/, puppeteer_core_1.default.launch({
                         executablePath: process.env.CHROME_BIN,
                         headless: false,
-                        slowMo: 500,
+                        slowMo: 30,
                         args: [
                             '--no-sandbox',
-                            '--disable-setuid-sandbox'
+                            '--disable-setuid-sandbox',
+                            '--ignore-certificate-errors',
                         ]
                     })];
             case 1:
@@ -60,25 +66,41 @@ var runPuppeteer = function () { return __awaiter(void 0, void 0, void 0, functi
                 return [4 /*yield*/, browser.newPage()];
             case 2:
                 page = _a.sent();
-                page.setDefaultTimeout(10000);
                 return [4 /*yield*/, page.setViewport({ width: 1200, height: 800 })];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, page.goto('https://google.com')];
+                return [4 /*yield*/, page.goto('https://54.248.50.84/user/login/')];
             case 4:
                 _a.sent();
-                return [3 /*break*/, 7];
+                return [4 /*yield*/, page.waitForSelector('#username').then(function (elem) { return elem.type(AUTH.EMAIL); })];
             case 5:
+                _a.sent();
+                return [4 /*yield*/, page.waitForSelector('#password').then(function (elem) { return elem.type(AUTH.PASS); })];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, page.waitForSelector('.btn-primary').then(function (elem) { return elem.click(); })];
+            case 7:
+                _a.sent();
+                return [4 /*yield*/, page.waitFor(3000)];
+            case 8:
+                _a.sent();
+                return [4 /*yield*/, page.cookies()];
+            case 9:
+                cookie = _a.sent();
+                console.log(cookie);
+                fs_1.default.writeFileSync('./cookie.json', JSON.stringify(cookie));
+                return [3 /*break*/, 12];
+            case 10:
                 err_1 = _a.sent();
                 console.log(err_1);
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 12];
+            case 11:
                 if (browser != undefined) {
                     browser.close();
                 }
                 console.log("end");
                 return [7 /*endfinally*/];
-            case 7: return [2 /*return*/];
+            case 12: return [2 /*return*/];
         }
     });
 }); };
